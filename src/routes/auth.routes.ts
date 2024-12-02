@@ -1,8 +1,9 @@
 import express from "express";
 import { z } from "zod";
-import { login, register } from "../controllers/auth.controller";
+import { getProfile, login, register } from "../controllers/auth.controller";
 import { asyncHandler } from "../utils/async-handler.util";
 import { validate } from "../middlewares/validate.middleware";
+import authenticate from "../middlewares/auth.middleware";
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ const loginSchema = z.object({
 
 router.post("/register", validate(registerSchema), asyncHandler(register));
 router.post("/login", validate(loginSchema), asyncHandler(login));
+router.get("/me", authenticate, asyncHandler(getProfile));
 
 export default router;

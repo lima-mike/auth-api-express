@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../utils/errors.util";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../utils/errors.util";
 import { hashPassword, verifyPassword } from "../utils/password.util";
 import { generateAccessToken } from "../utils/jwt.util";
 
@@ -38,4 +42,22 @@ export const login = async (req: Request, res: Response) => {
   const accessToken = generateAccessToken(user.id);
 
   res.json({ status: "success", accessToken });
+};
+
+export const getProfile = async (req: Request, res: Response) => {
+  const claims = req.claims;
+  if (!claims) throw new UnauthorizedError("Missing claims");
+
+  const user = await prisma.user.findUnique({
+    where: { id: claims.sub },
+    select: {
+      id: true,
+      email: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  if (!user) throw new NotFoundError("User not found");
+
+  res.json({ status: "success", user });
 };

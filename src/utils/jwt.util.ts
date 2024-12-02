@@ -7,3 +7,7 @@ export const generateAccessToken = (userId: string) => {
     expiresIn: "1h",
   });
 };
+
+export const verifyAccessToken = (token: string) => {
+  return jwt.verify(token, ACCESS_TOKEN_SECRET);
+};
