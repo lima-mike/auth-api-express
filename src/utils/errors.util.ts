@@ -7,12 +7,6 @@ export class AppError extends Error {
   }
 }
 
-export class ValidationError extends AppError {
-  constructor(message: string) {
-    super(message, 400);
-  }
-}
-
 export class BadRequestError extends AppError {
   constructor(message: string) {
     super(message, 400);
